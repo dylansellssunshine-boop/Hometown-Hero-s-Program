@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Florida Hometown Heroes — Am I Eligible?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-950:#0A1B33;
+    --navy-800:#122A4D;
+    --navy-700:#1C3B66;
+    --gold-500:#D4AF37;
+    --gold-300:#EBD98B;
+    --cream-50:#F7F4EC;
+    --ink-900:#0E1420;
+    --ember-600:#B4472F;
+    --shadow: 0 20px 60px -20px rgba(0,0,0,0.5);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--navy-950);
+    color:var(--cream-50);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .stage{
+    max-width:520px;
+    margin:0 auto;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+    padding:0 20px;
+  }
+  /* Top bar with shield progress */
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    padding:22px 0 10px;
+  }
+  .shield{width:34px;height:38px;flex-shrink:0;}
+  .shield .seg{transition:fill 0.5s ease;}
+  .brand-mark{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:#8CA0C2;
+  }
+  .brand-mark b{color:var(--gold-300);}
+
+  .screen{
+    display:none;
+    flex:1;
+    flex-direction:column;
+    justify-content:center;
+    padding:20px 0 60px;
+    animation:rise 0.45s ease both;
+  }
+  .screen.active{display:flex;}
+  @keyframes rise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--gold-300);
+    margin-bottom:14px;
+  }
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    font-size:clamp(30px,7vw,42px);
+    line-height:1.08;
+    margin:0 0 16px;
+    color:#fff;
+  }
+  h1 .amt{color:var(--gold-500);}
+  p.lede{
+    font-size:16.5px;
+    line-height:1.55;
+    color:#C7D2E4;
+    margin:0 0 30px;
+    max-width:44ch;
+  }
+  .stat-row{
+    display:flex;
+    gap:10px;
+    margin-bottom:32px;
+    flex-wrap:wrap;
+  }
+  .stat-chip{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    background:var(--navy-800);
+    border:1px solid var(--navy-700);
+    padding:8px 12px;
+    border-radius:100px;
+    color:#DCE5F2;
+  }
+  .stat-chip b{color:var(--gold-300);}
+
+  button.cta{
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+    font-size:16px;
+    background:var(--gold-500);
+    color:var(--navy-950);
+    border:none;
+    padding:17px 26px;
+    border-radius:10px;
+    cursor:pointer;
+    width:100%;
+    transition:transform 0.15s ease, background 0.15s ease;
+    box-shadow:var(--shadow);
+  }
+  button.cta:hover{background:var(--gold-300);transform:translateY(-1px);}
+  button.cta:active{transform:translateY(0);}
+  .microcopy{
+    text-align:center;
+    font-size:12.5px;
+    color:#7F91B0;
+    margin-top:12px;
+  }
+
+  .q-title{
+    font-family:'Fraunces',serif;
+    font-size:26px;
+    font-weight:600;
+    color:#fff;
+    margin:0 0 22px;
+    line-height:1.25;
+  }
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .opt{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    background:var(--navy-800);
+    border:1.5px solid var(--navy-700);
+    color:var(--cream-50);
+    padding:16px 18px;
+    border-radius:12px;
+    font-size:15.5px;
+    font-weight:500;
+    cursor:pointer;
+    text-align:left;
+    transition:border-color 0.15s ease, background 0.15s ease;
+  }
+  .opt:hover{border-color:var(--gold-500);background:#16305A;}
+  .opt .ic{width:22px;height:22px;flex-shrink:0;opacity:0.85;}
+  .opt.selected{border-color:var(--gold-500);background:#1B3A66;}
+
+  .badge-wrap{
+    display:flex;
+    justify-content:center;
+    margin-bottom:22px;
+  }
+  .badge-wrap svg{width:96px;height:106px;}
+
+  .reveal-name{color:var(--gold-300);}
+
+  form{display:flex;flex-direction:column;gap:12px;margin-top:6px;}
+  label{font-size:12.5px;color:#9FB0CB;margin-bottom:-6px;}
+  input, select{
+    font-family:'Inter',sans-serif;
+    font-size:15.5px;
+    background:var(--navy-800);
+    border:1.5px solid var(--navy-700);
+    color:#fff;
+    padding:14px 15px;
+    border-radius:10px;
+    outline:none;
+  }
+  input::placeholder{color:#647794;}
+  input:focus, select:focus{border-color:var(--gold-500);}
+  select{appearance:none;}
+
+  .thanks-icon{width:64px;height:64px;margin-bottom:18px;}
+  .contact-card{
+    background:var(--navy-800);
+    border:1px solid var(--navy-700);
+    border-radius:14px;
+    padding:18px;
+    margin-top:22px;
+  }
+  .contact-row{display:flex;gap:12px;margin-bottom:10px;}
+  .contact-row:last-child{margin-bottom:0;}
+  a.contact-btn{
+    flex:1;
+    text-align:center;
+    padding:13px;
+    border-radius:9px;
+    font-weight:600;
+    font-size:14.5px;
+    text-decoration:none;
+    border:1.5px solid var(--gold-500);
+    color:var(--gold-300);
+  }
+  a.contact-btn.solid{background:var(--gold-500);color:var(--navy-950);}
+
+  .fine{
+    font-size:11.5px;
+    line-height:1.6;
+    color:#5C6E8C;
+    margin-top:auto;
+    padding-top:24px;
+  }
+  .err{color:#E39C8B;font-size:13px;min-height:16px;}
+  .back-link{
+    font-size:13px;
+    color:#7F91B0;
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:0;
+    margin-bottom:16px;
+    text-align:left;
+    width:fit-content;
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <div class="topbar">
+    <svg class="shield" viewBox="0 0 34 38" id="shieldTop">
+      <path d="M17 1 L32 6 V17 C32 27 25 33.5 17 37 C9 33.5 2 27 2 17 V6 Z" fill="none" stroke="#3A5padding" stroke-width="0"/>
+      <path id="seg1" class="seg" d="M17 1 L32 6 V17 C32 20.5 31 23.7 29.3 26.6 L17 20 Z" fill="#243F6B"/>
+      <path id="seg2" class="seg" d="M2 6 L17 1 V20 L4.7 26.6 C3 23.7 2 20.5 2 17 Z" fill="#1C3457"/>
+      <path id="seg3" class="seg" d="M4.7 26.6 L17 20 L29.3 26.6 C26.5 31.3 22.1 34.9 17 37 C11.9 34.9 7.5 31.3 4.7 26.6 Z" fill="#1C3457"/>
+    </svg>
+    <div class="brand-mark">The DePalma Group <b>· SW Florida</b></div>
+  </div>
+
+  <!-- SCREEN 0: HERO -->
+  <section class="screen active" data-screen="hero">
+    <div class="eyebrow">Florida Hometown Heroes · Reopens July 13, 2026</div>
+    <h1>Public servants can get up to <span class="amt">$35,000</span> toward their first home.</h1>
+    <p class="lede">Teachers, nurses, firefighters, police, military and 50+ other community professions qualify for a 0% interest down payment assistance loan — no monthly payment, ever. Answer 2 quick questions to see where you stand.</p>
+    <div class="stat-row">
+      <span class="stat-chip"><b>$0</b> monthly payment</span>
+      <span class="stat-chip"><b>0%</b> interest</span>
+      <span class="stat-chip"><b>60 sec</b> to check</span>
+    </div>
+    <button class="cta" onclick="goTo('q1')">See If I Qualify →</button>
+    <p class="microcopy">Free · No credit check · Funds are first-come, first-served</p>
+  </section>
+
+  <!-- SCREEN 1: PROFESSION -->
+  <section class="screen" data-screen="q1">
+    <button class="back-link" onclick="goTo('hero')">← Back</button>
+    <div class="eyebrow">Question 1 of 2</div>
+    <h2 class="q-title">Which best describes what you do for our community?</h2>
+    <div class="options" id="professionOpts">
+      <button class="opt" data-val="Teacher / School Staff">🎓 Teacher / School Staff</button>
+      <button class="opt" data-val="Nurse / Healthcare Worker">🩺 Nurse / Healthcare Worker</button>
+      <button class="opt" data-val="Firefighter / EMS">🚒 Firefighter / EMS</button>
+      <button class="opt" data-val="Law Enforcement">🛡️ Law Enforcement</button>
+      <button class="opt" data-val="Active Military / Veteran">🎖️ Active Military / Veteran</button>
+      <button class="opt" data-val="Other Public Servant">🏛️ Other Public Servant / Not Sure</button>
+    </div>
+  </section>
+
+  <!-- SCREEN 2: TIMELINE -->
+  <section class="screen" data-screen="q2">
+    <button class="back-link" onclick="goTo('q1')">← Back</button>
+    <div class="eyebrow">Question 2 of 2</div>
+    <h2 class="q-title">When are you hoping to buy?</h2>
+    <div class="options" id="timelineOpts">
+      <button class="opt" data-val="ASAP — within 30 days">⚡ ASAP — within 30 days</button>
+      <button class="opt" data-val="1–3 months">📅 1–3 months</button>
+      <button class="opt" data-val="3–6 months">🗓️ 3–6 months</button>
+      <button class="opt" data-val="Just exploring">👀 Just exploring</button>
+    </div>
+  </section>
+
+  <!-- SCREEN 3: REVEAL -->
+  <section class="screen" data-screen="reveal">
+    <div class="badge-wrap">
+      <svg viewBox="0 0 34 38">
+        <path d="M17 1 L32 6 V17 C32 27 25 33.5 17 37 C9 33.5 2 27 2 17 V6 Z" fill="#12294D" stroke="#D4AF37" stroke-width="1"/>
+        <path d="M11 18.5 L15.2 23 L23.5 13.5" fill="none" stroke="#D4AF37" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="eyebrow" style="text-align:center">Based on your answers</div>
+    <h2 class="q-title" style="text-align:center">Good news, <span class="reveal-name" id="revealProfession">friend</span> — you're in the profile of buyers this program was built for.</h2>
+    <p class="lede" style="text-align:center;margin-left:auto;margin-right:auto;">Because funding is limited and allocated first-come, first-served when the program reopens July 13, the buyers who get pre-approved early are the ones who actually secure the $35,000. Let's get you positioned.</p>
+    <button class="cta" onclick="goTo('form')">Claim My Spot →</button>
+  </section>
+
+  <!-- SCREEN 4: FORM -->
+  <section class="screen" data-screen="form">
+    <button class="back-link" onclick="goTo('reveal')">← Back</button>
+    <div class="eyebrow">Last step</div>
+    <h2 class="q-title">Where should I send your eligibility details?</h2>
+    <form id="leadForm" onsubmit="return submitLead(event)">
+      <label for="name">Full name</label>
+      <input id="name" type="text" placeholder="Jane Rodriguez" required>
+      <label for="phone">Phone (for a quick text or call)</label>
+      <input id="phone" type="tel" placeholder="(941) 555-0123" required>
+      <label for="email">Email</label>
+      <input id="email" type="email" placeholder="jane@email.com" required>
+      <label for="area">Where are you looking to buy?</label>
+      <select id="area">
+        <option value="Port Charlotte">Port Charlotte</option>
+        <option value="Sarasota">Sarasota</option>
+        <option value="Lakewood Ranch">Lakewood Ranch</option>
+        <option value="North Port">North Port</option>
+        <option value="Not sure yet">Not sure yet</option>
+      </select>
+      <div class="err" id="formErr"></div>
+      <button class="cta" type="submit" style="margin-top:6px;">Send My Info →</button>
+    </form>
+    <p class="microcopy">Dylan DePalma personally follows up — no call centers, no spam.</p>
+  </section>
+
+  <!-- SCREEN 5: THANKS -->
+  <section class="screen" data-screen="thanks">
+    <svg class="thanks-icon" viewBox="0 0 34 38">
+      <path d="M17 1 L32 6 V17 C32 27 25 33.5 17 37 C9 33.5 2 27 2 17 V6 Z" fill="#D4AF37"/>
+      <path d="M11 18.5 L15.2 23 L23.5 13.5" fill="none" stroke="#0A1B33" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <div class="eyebrow">You're on the list</div>
+    <h1 style="font-size:30px;">Thanks, <span id="thanksName" class="amt">friend</span>. I've got your info.</h1>
+    <p class="lede">I'll personally reach out within a few hours to walk through your exact eligibility and get you positioned before funds open up on July 13. If it's urgent, reach me directly:</p>
+    <div class="contact-card">
+      <div class="contact-row">
+        <a class="contact-btn solid" href="tel:9414573780">📞 Call (941) 457-3780</a>
+        <a class="contact-btn" href="sms:9414573780">💬 Text Me</a>
+      </div>
+    </div>
+  </section>
+
+  <p class="fine">Florida Hometown Heroes Housing Program is administered by the Florida Housing Finance Corporation. Program terms, income limits, and funding availability are subject to change and confirmed at pre-approval by a participating lender. Dylan DePalma, The DePalma Group at Keller Williams Island Life, is a licensed real estate agent, not a mortgage lender. Equal Housing Opportunity.</p>
+
+</div>
+
+<script>
+  const answers = {};
+
+  function goTo(screen){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.querySelector(`.screen[data-screen="${screen}"]`).classList.add('active');
+    updateShield(screen);
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function updateShield(screen){
+    const map = {hero:0, q1:0, q2:1, reveal:2, form:2, thanks:3};
+    const lvl = map[screen] ?? 0;
+    document.getElementById('seg1').setAttribute('fill', lvl>=1 ? '#D4AF37' : '#243F6B');
+    document.getElementById('seg2').setAttribute('fill', lvl>=2 ? '#D4AF37' : '#1C3457');
+    document.getElementById('seg3').setAttribute('fill', lvl>=3 ? '#D4AF37' : '#1C3457');
+  }
+
+  document.getElementById('professionOpts').addEventListener('click', (e)=>{
+    const btn = e.target.closest('.opt');
+    if(!btn) return;
+    answers.profession = btn.dataset.val;
+    document.getElementById('revealProfession').textContent = btn.dataset.val;
+    setTimeout(()=>goTo('q2'), 200);
+  });
+
+  document.getElementById('timelineOpts').addEventListener('click', (e)=>{
+    const btn = e.target.closest('.opt');
+    if(!btn) return;
+    answers.timeline = btn.dataset.val;
+    setTimeout(()=>goTo('reveal'), 200);
+  });
+
+  async function submitLead(e){
+    e.preventDefault();
+    const name = document.getElementById('name').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const area = document.getElementById('area').value;
+    const errEl = document.getElementById('formErr');
+    errEl.textContent = '';
+
+    const lead = {
+      name, phone, email, area,
+      profession: answers.profession || '',
+      timeline: answers.timeline || '',
+      submittedAt: new Date().toISOString(),
+      source: 'HTH Quiz Funnel'
+    };
+
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    if(submitBtn){ submitBtn.disabled = true; submitBtn.textContent = 'Sending…'; }
+
+    try{
+      const res = await fetch('https://formspree.io/f/xdarbyyr', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(lead)
+      });
+      if(!res.ok) throw new Error('Formspree responded with an error');
+    }catch(err){
+      console.error('Lead submission failed:', err);
+      errEl.textContent = "Something went wrong sending that — please call/text (941) 457-3780 directly.";
+      if(submitBtn){ submitBtn.disabled = false; submitBtn.textContent = 'Send My Info →'; }
+      return false;
+    }
+
+    document.getElementById('thanksName').textContent = name.split(' ')[0] || 'friend';
+    goTo('thanks');
+    return false;
+  }
+</script>
+</body>
+</html>
